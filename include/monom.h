@@ -2,6 +2,7 @@
 #pragma once
 
 #include <iostream>
+using namespace std;
 
 class Monom{
 public:
@@ -13,7 +14,10 @@ public:
 	Monom(Monom &m);
 	~Monom();
 
-	void Print(Monom *head); //Печать монома
+//	friend istream &operator>>(istream &istr, TBitField &bf);       //      (#О7)
+ // friend ostream &operator<<(ostream &ostr, const TBitField &bf); //      (#П4)
+//	void PrintMonom(Monom *head); //Печать монома
+	friend ostream &operator<<(ostream &ostr, const Monom *head);
 //	void Insert
-
+	  
 };

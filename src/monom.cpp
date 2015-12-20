@@ -1,4 +1,5 @@
 #include "monom.h" 
+#include "polinom.h"
 Monom :: Monom (double coef, int a, int b, int c){
 
 	if ((a < 0) || (b < 0) || (c < 0))
@@ -23,4 +24,18 @@ Monom :: Monom(Monom &m){
 }
 Monom :: Monom(){
 	deg = NULL;
+}
+void Monom :: PrintMonom(Monom *head){
+	while (head != NULL){
+		cout << "coeff = " << head->coeff << endl;
+		cout << "deg = " << head->deg << endl;
+	}
+}
+ostream &operator<<(ostream &ostr, const Monom *head) // вывод
+{
+	while (head != NULL){
+		ostr << "coeff = " << head->coeff << endl;
+		ostr << "deg = " << head->deg << endl;
+			}
+	return ostr;
 }

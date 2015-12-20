@@ -9,6 +9,8 @@
 #include <iostream>
 #include "monom.h"
 
+using namespace std;
+
 struct Node{
 //Звено Node
 	Monom m;
@@ -18,7 +20,8 @@ struct Node{
 	Node(Monom m, Node *next);
 	Node(Node &N);
 	~Node();
-	void PrintNode(Node *next);
+//	void PrintNode(Node *next);
+	friend ostream &operator<<(ostream &ostr, const Node *head);
 };
 
 
@@ -31,19 +34,22 @@ public:
 	Polinom(Node *next);
 	~Polinom();
 
-	void PrintPol(Polinom *head);//Печать полинома
+	void PrintPolinom(Polinom *head);//Печать полинома
 	
-	void InsertLast(Polinom *curr, Monom *data);//вставка монома в конец списка
-	void InsertFirst(Polinom &head, Monom *data); //вставка монома в начало списка
-	void InsertMiddle(Polinom &curr, Monom *data); //вставка монома в середину списка
+	void InsertLast(Node *curr, Monom &data);//вставка монома в конец списка
+	void InsertFirst(Node *&head, Monom &data); //вставка монома в начало списка
+	void InsertMiddle(Node *curr, Monom &data); //вставка монома в середину списка
 	
-	void DeleteFirst(Polinom *&head);//Удаление первого
-	void DeleteMiddle(Polinom *&head);//Удаление из середины
+	void DeleteFirst(Node *&head);//Удаление первого
+	void DeleteMiddle(Node *&head);//Удаление из середины
 	
-	Polinom* Search(Polinom *head, Monom *key);//поиск
+	void Search(Node *&head, Monom &key);//поиск
+	Node* SearchForDelete(Node *&head, Monom &key);
 
-	Polinom& operator+ (const Polinom &p);
-	Polinom& operator* (const Polinom &p);
+	Polinom& Plus (const Polinom *&B, const Polinom &C);
+	Polinom& Subtruct (const Polinom *&B, const Polinom &C);
+	Polinom& Scalar (int scalar);
+
 };
 
 #endif
