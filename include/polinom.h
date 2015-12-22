@@ -6,7 +6,7 @@
 #ifndef _POLINOM_H_
 #define _POLINOM_H
 
-#define eps = 0.00001
+
 #include <iostream>
 #include "monom.h"
 
@@ -51,7 +51,9 @@ public:
 	void Search(Node *&head, Monom &key);//поиск
 	Node* SearchForDelete(Node *&head, Monom &key);
 
-	Polinom& Plus (const Polinom *&B, const Polinom *&C);
+	Polinom& Plus ( Polinom *&B,  Polinom *&C);
+	Polinom& Plus2 ( Polinom *&B,  Polinom *&C);
+	Polinom& Minus ( Polinom *&B,  Polinom *&C);
 	Polinom& Subtruct (const Polinom *&B, const Polinom *&C);
 	Polinom& Scalar (int scalar);
 

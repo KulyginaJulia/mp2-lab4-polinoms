@@ -1,3 +1,4 @@
+
 #include "monom.h" 
 #include "polinom.h"
 Monom :: Monom (double coef, int a, int b, int c){
@@ -30,6 +31,7 @@ Monom :: Monom(Monom &m){
 }
 Monom :: Monom(){
 	deg = NULL;
+	coeff = 0;
 }
 //void Monom :: PrintMonom(Monom *head){
 //	while (head != NULL){
@@ -81,8 +83,8 @@ double Monom :: GetCoeff() const
 	 bool flag = true;
 	 for (int i = 0; i < 3; i++)
 		 if (A.deg[i] != B.deg[i])
-			 return false;
- 	return true;
+			 flag =  false;
+ 	return flag;
  }
  
  bool operator!=(const Monom& A, const Monom& B)
@@ -93,7 +95,7 @@ double Monom :: GetCoeff() const
  bool operator < (const Monom& A, const Monom& B)
  {
 	for(int i = 0; i < 3; i++)
-	 if (A.deg[i] >= B.deg[i])
+	 if (A.deg[i] > B.deg[i])
 			return false;
  	return true;
  }
@@ -123,11 +125,9 @@ Monom operator - (const Monom& A, const Monom& B) {
  	return res;
 }
 
-Monom operator*(const Monom& A, const Monom& B)
-{
-	for (int i = 0; i < 3; i++ ){
-		A.deg[i] = A.deg[i] + B.deg[i];
-
+Monom operator*(const Monom& A, const Monom& B){
+	
+	double m = A.GetCoeff() * B.GetCoeff();
 	bool flag = true;
 	for (int i = 0; i < 3; i++)
 			if (A.deg[i] != B.deg[i]){
@@ -137,6 +137,6 @@ Monom operator*(const Monom& A, const Monom& B)
 	if (flag == false) {
 		throw("Different degrees.");
 	}
-	Monom res(A.GetCoeff() * B.GetCoeff(), A.GetDegree());
+	Monom res(m, A.GetDegree());
 	return res;
- }
+}

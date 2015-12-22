@@ -19,8 +19,8 @@ public:
  // friend ostream &operator<<(ostream &ostr, const TBitField &bf);
 //	void PrintMonom(Monom *head); //Печать монома
 	friend ostream &operator<<(ostream &ostr, const Monom *head);
-	double GetCoeff()const;
-	int * GetDegree()const;
+	double GetCoeff() const;
+	int * GetDegree() const;
 	void SetCoeff(double c);
 	void SetDegree(int *d);
 

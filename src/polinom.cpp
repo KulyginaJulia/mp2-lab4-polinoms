@@ -1,5 +1,6 @@
 #include "polinom.h"
 #include "monom.h"
+#define eps 0.0001
 
 //–еализаци€ структуры Node
 void Node :: SetMonom(Monom x) {
@@ -35,7 +36,6 @@ Node :: Node(Node &N){
 }
 
 Node :: ~Node(){
-
 	if (next != NULL) delete next;
 	delete &m;
 }
@@ -68,6 +68,7 @@ Polinom :: Polinom(){
 	head = NULL;
 }
 Polinom :: ~ Polinom(){
+	// удалить все звень€
 	if (this->head != NULL) delete this->head;
 }
 //void Polinom :: PrintPolinom(Polinom *head){
@@ -78,14 +79,14 @@ Polinom :: ~ Polinom(){
 //	}
 //}
 void Polinom :: InsertLast(Node *curr, Monom &data){
-	curr->next = new Node;
-	curr->next->m = data;
-	curr->next->next = NULL;
+	curr->next = new Node(data);
+	//curr->next->m = data;
+	//curr->next->next = NULL;
 }
 void Polinom :: InsertMiddle(Node *curr, Monom &data){
-	Node *elem = new Node;
-	elem->m = data;
-	elem->next = curr->next;
+	Node *elem = new Node(data, curr->next);
+	//elem->m = data;
+	//elem->next = curr->next;
 	curr->next =  elem;
 }
 void Polinom :: InsertFirst(Node *&head, Monom &data){
@@ -105,11 +106,11 @@ void Polinom :: DeleteMiddle(Node *&prev){
 	delete tmp;
 }
 void Polinom :: Search(Node *&head, Monom &key){
-	 Node *tmp;
+	 Node *tmp = head; // посмотреть
 	 while(tmp != NULL){
 		 if( tmp->m == key) break;
 		 else tmp = tmp->next;
-}
+	}
 	 bool flag = false;
 	 while (tmp != NULL){
 		 if (tmp->m < key) tmp = tmp->next;
@@ -124,11 +125,12 @@ void Polinom :: Search(Node *&head, Monom &key){
 	 }
 }
 Node* Polinom :: SearchForDelete(Node *&head, Monom &key){
-	 Node *tmp; Node *prev = NULL;
+	 Node *tmp = head; 
+	 Node *prev = NULL;
 	 while(tmp != NULL){
 		 if( tmp->m == key) break;
 		 else tmp = tmp->next;
-}
+	}
 	 bool flag = false;
 	 while (tmp != NULL){
 		 if (tmp->m < key){
@@ -145,30 +147,32 @@ Node* Polinom :: SearchForDelete(Node *&head, Monom &key){
 			 return prev;
 	 }
 }
-Polinom& Polinom :: Plus (const Polinom *&B, const Polinom *&C){
+Polinom& Polinom :: Plus ( Polinom *&B,  Polinom *&C){
 	Polinom *tmpA, *tmpB, *tmpC;
 	tmpC->head = C->head->next;
 	Node*prevC = C->head;
 	tmpA->head = this->head->next;
 	tmpB->head = B->head->next;
+
 	double sum = this->head->m.GetCoeff() + tmpB->head->m.GetCoeff();
+	
 	while((tmpA != this)&& (tmpB != B)){
 		if (this->head->m == tmpB->head->m) //сравнение степеней
-			if (sum >= eps){
-			//	tmpC = new Polinom();
-				tmpC->head->m.GetCoeff() = sum;
+			if (abs(sum) >= eps){
+				tmpC = new Polinom();
+				tmpC->head->m.coeff = sum;
 				prevC->next = tmpC->head;
 			}
 			if (this->head->m > tmpB->head->m){
 				tmpC = new Polinom();
-			//	tmpC->head->m(tmpB->head->GetMonom());
+				tmpC->head->m = Monom(tmpB->head->GetMonom());
 				prevC->next = tmpC->head;
 				prevC = tmpC->head;
 				tmpB->head = tmpB->head->next;
 			}
 			else {
 				tmpC = new Polinom();
-		//		tmpC->head->m(this->head->GetMonom());
+				tmpC->head->m = Monom(this->head->GetMonom());
 				prevC->next = tmpC->head;
 				prevC = tmpC->head;
 				tmpB->head = tmpB->head->next;
@@ -176,7 +180,7 @@ Polinom& Polinom :: Plus (const Polinom *&B, const Polinom *&C){
 	}
 	while(tmpA->head != this->head){
 		tmpC = new Polinom();
-	//	tmpC->head->m(this->head->GetMonom());
+		tmpC->head->m = Monom(this->head->GetMonom());
 		prevC->next = tmpC->head;
 		prevC = tmpC->head;
 		tmpB->head = tmpB->head->next;
@@ -184,12 +188,79 @@ Polinom& Polinom :: Plus (const Polinom *&B, const Polinom *&C){
 	while(tmpB->head != B->head){
 		tmpC = new Polinom();
 		Monom tmp();
-		tmp = tmpB->head->GetMonom();
-		tmpC->head->m(tmp);
+		tmpC->head->m = Monom(tmpB->head->GetMonom());
 		prevC->next = tmpC->head;
 		prevC = tmpC->head;
 		tmpB->head = tmpB->head->next;
 	}
+	return *tmpC;
+}
+
+Polinom& Polinom :: Plus2 ( Polinom *&B,  Polinom *&C){
+	// this = B + C
+	// this = A
+	Node *tmpA, *tmpB, *tmpC;
+	// почистить this
+	tmpA = new Node(Monom(-1, -1, -1, -1)); // временна€ голова, потом можно удалить
+	tmpA = this->head;
+	tmpB = this->head;
+	tmpC = this->head;
+	while((tmpB != NULL)&& (tmpC != NULL)) // пока ¬ и — не кончились
+	{
+		//сравниваем степени tmpC->data->degree и tmpB->data->degree
+		//если они =, то
+		// double sum = tmpB->m.GetCoeff() + tmpC->m.GetCoeff();
+		//tmpC->SetNext = new Node(Monom(sum, degree));
+
+	}
+	return *this;	
+}
+
+Polinom& Polinom :: Minus ( Polinom *&B,  Polinom *&C){
+	Polinom *tmpA, *tmpB, *tmpC;
+	tmpC->head = C->head->next;
+	Node*prevC = C->head;
+	tmpA->head = this->head->next;
+	tmpB->head = B->head->next;
+	double min = this->head->m.GetCoeff() - tmpB->head->m.GetCoeff();
+	while((tmpA != this)&& (tmpB != B)){
+		if (this->head->m == tmpB->head->m) //сравнение степеней 
+			if ((min >= 0.00001) || (min <=  -0.00001)){
+				tmpC = new Polinom();
+				tmpC->head->m.coeff = min;
+				prevC->next = tmpC->head;
+			}
+			if (this->head->m > tmpB->head->m){
+				tmpC = new Polinom();
+				tmpC->head->m = Monom(tmpB->head->GetMonom());
+				prevC->next = tmpC->head;
+				prevC = tmpC->head;
+				tmpB->head = tmpB->head->next;
+			}
+			else {
+				tmpC = new Polinom();
+				tmpC->head->m = Monom(this->head->GetMonom());
+				prevC->next = tmpC->head;
+				prevC = tmpC->head;
+				tmpB->head = tmpB->head->next;
+			}
+	}
+	while(tmpA->head != this->head){
+		tmpC = new Polinom();
+		tmpC->head->m = Monom(this->head->GetMonom());
+		prevC->next = tmpC->head;
+		prevC = tmpC->head;
+		tmpB->head = tmpB->head->next;
+	}
+	while(tmpB->head != B->head){
+		tmpC = new Polinom();
+		Monom tmp();
+		tmpC->head->m = Monom(tmpB->head->GetMonom());
+		prevC->next = tmpC->head;
+		prevC = tmpC->head;
+		tmpB->head = tmpB->head->next;
+	}
+	return *tmpC;
 }
 Polinom& Polinom :: Subtruct (const Polinom *&B, const Polinom *&C){
 	Polinom *tmpA, *tmpB, *tmpC;
@@ -199,14 +270,14 @@ Polinom& Polinom :: Subtruct (const Polinom *&B, const Polinom *&C){
 	tmpB->head = B->head->next;
 	while (tmpA->head != this->head ){
 		while (tmpB->head != B->head){
-		//	tmpC = Insert(C, tmpC);
+		//”пор€дочивание и вставки tmpC = Insert(C, tmpC);
 		}
-	
-	
+
 	}
+	return *this;
 
 }
 Polinom& Polinom :: Scalar (int scalar){
 
-
+	return *this;
 }
