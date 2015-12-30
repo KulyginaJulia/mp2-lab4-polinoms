@@ -4,280 +4,256 @@
 
 //Реализация структуры Node
 void Node :: SetMonom(Monom x) {
- 	this->m = x;
+	this->m = x;
 }
 void Node :: SetNext(Node *n) {
- 		next = n;
+	next = n;
 }
 Node* Node :: GetNext(){
- 	return next;
+	return next;
 }
 Monom Node :: GetMonom() {
 	return m;
 }
- 
+
 Node :: Node() {
 	SetMonom(Monom());
 	SetNext(NULL);
 }
 
 Node :: Node(Monom x) {
- 	SetMonom(x);
- 	SetNext(NULL);
+	this->SetMonom(x);
+	this->SetNext(NULL);
 }
 Node :: Node(Monom x, Node* n) {
- 		SetMonom(x);
- 		SetNext(n);
+	SetMonom(x);
+	SetNext(n);
 }
 
-Node :: Node(Node &N){
-	this->m = N.m;
-	this->next = N.next;
-}
-
-Node :: ~Node(){
-	if (next != NULL) delete next;
-	delete &m;
-}
-//void Node :: PrintNode(Node *next){
-//	Node *tmp;
-//	while (tmp != NULL){
-//		cout << tmp->m << endl;
-//		tmp = tmp->next;
-//	}
-//}
-//ostream &operator<<(ostream &ostr, const Node *next) // вывод
-//{
-//	Node *tmp;
-//	while (tmp != NULL){
-//		ostr << tmp->m << endl;
-//		tmp = tmp->next;
-//		}
-//	return ostr;
+//Node :: Node(Node &N) : m(N.m), next(N.next) {
+//	//this->m = N.m;
+//	//this->next = N.next;
 //}
 
+Node :: ~Node(){}
 //Реализация Polinom
 
 Polinom :: Polinom (Node *next){
 
-	//if (next == NULL)
-	//	throw "List without head";
+	if (next == NULL)
+		throw "List without head";
 	this->head = next;
 }
 Polinom :: Polinom(){
 	head = NULL;
 }
-Polinom :: ~ Polinom(){
-	// удалить все звенья
-	if (this->head != NULL) delete this->head;
+
+Polinom :: Polinom(Polinom &m){
+	Node *tmp = m.head->next;
+	Node *tmp_this;
+	if (!m.head)
+	{
+		this->head = NULL;
+		return;
+	}
+	this->head = new Node(m.head->m);
+	tmp_this = this->head; 
+	while(tmp != NULL){
+		this->InsertLast(tmp_this, tmp->m);
+		tmp_this = tmp_this->next;
+		tmp = tmp->next;
+	}
+	tmp_this->next = NULL;
 }
-//void Polinom :: PrintPolinom(Polinom *head){
-//	Polinom *next;	
-//	while (next != NULL){
-//		cout << next->head->m << endl;
-//		next = head->next;
-//	}
-//}
+Polinom :: ~ Polinom(){
+	DeleteList();
+}
 void Polinom :: InsertLast(Node *curr, Monom &data){
+	if (!curr)
+		throw "insertion after null pointer";
 	curr->next = new Node(data);
-	//curr->next->m = data;
-	//curr->next->next = NULL;
 }
 void Polinom :: InsertMiddle(Node *curr, Monom &data){
 	Node *elem = new Node(data, curr->next);
-	//elem->m = data;
-	//elem->next = curr->next;
 	curr->next =  elem;
 }
 void Polinom :: InsertFirst(Node *&head, Monom &data){
-	Node *elem = new Node;
-	elem->m = data;
-	elem->next = head;
+	Node *elem = new Node(data, head);
 	head = elem;
 }
-void Polinom :: DeleteFirst(Node *&head){
+void Polinom :: DeleteFirst(){
 	Node *tmp = head;
 	head = head->next;
 	delete tmp;
+}
+void Polinom :: DeleteList(){
+	while(head != NULL)
+		DeleteFirst();
 }
 void Polinom :: DeleteMiddle(Node *&prev){
 	Node *tmp = prev;
 	prev->next = tmp->next;
 	delete tmp;
 }
-void Polinom :: Search(Node *&head, Monom &key){
-	 Node *tmp = head; // посмотреть
-	 while(tmp != NULL){
-		 if( tmp->m == key) break;
-		 else tmp = tmp->next;
-	}
-	 bool flag = false;
-	 while (tmp != NULL){
-		 if (tmp->m < key) tmp = tmp->next;
-		 else {
-			 flag = true;
-			 break;
-		 }
-	 }
-	 if (flag == true){
-		 if (tmp->m != key) 
-			 cout << "Wasn`t found";
-	 }
-}
-Node* Polinom :: SearchForDelete(Node *&head, Monom &key){
-	 Node *tmp = head; 
-	 Node *prev = NULL;
-	 while(tmp != NULL){
-		 if( tmp->m == key) break;
-		 else tmp = tmp->next;
-	}
-	 bool flag = false;
-	 while (tmp != NULL){
-		 if (tmp->m < key){
-			 prev = tmp;
-			 tmp = tmp->next;
-		 }
-		 else {
-			 flag = true;
-			 break;
-		 }
-	 }
-	 if (flag == true){
-		 if (tmp->m != key) 
-			 return prev;
-	 }
-}
-Polinom& Polinom :: Plus ( Polinom *&B,  Polinom *&C){
-	Polinom *tmpA, *tmpB, *tmpC;
-	tmpC->head = C->head->next;
-	Node*prevC = C->head;
-	tmpA->head = this->head->next;
-	tmpB->head = B->head->next;
+void Polinom :: Search(Monom &key){
+	Node *tmp = head; 
 
-	double sum = this->head->m.GetCoeff() + tmpB->head->m.GetCoeff();
-	
-	while((tmpA != this)&& (tmpB != B)){
-		if (this->head->m == tmpB->head->m) //сравнение степеней
-			if (abs(sum) >= eps){
-				tmpC = new Polinom();
-				tmpC->head->m.coeff = sum;
-				prevC->next = tmpC->head;
-			}
-			if (this->head->m > tmpB->head->m){
-				tmpC = new Polinom();
-				tmpC->head->m = Monom(tmpB->head->GetMonom());
-				prevC->next = tmpC->head;
-				prevC = tmpC->head;
-				tmpB->head = tmpB->head->next;
-			}
-			else {
-				tmpC = new Polinom();
-				tmpC->head->m = Monom(this->head->GetMonom());
-				prevC->next = tmpC->head;
-				prevC = tmpC->head;
-				tmpB->head = tmpB->head->next;
-			}
+	bool flag = false;
+	while (tmp != NULL){
+		if (tmp->m < key) 
+			tmp = tmp->next;
+		else 
+		{
+			flag = true;
+			break;
+		}
 	}
-	while(tmpA->head != this->head){
-		tmpC = new Polinom();
-		tmpC->head->m = Monom(this->head->GetMonom());
-		prevC->next = tmpC->head;
-		prevC = tmpC->head;
-		tmpB->head = tmpB->head->next;
+	if (flag == true){
+		if (tmp->m != key) 
+			cout << "Wasn`t found";
 	}
-	while(tmpB->head != B->head){
-		tmpC = new Polinom();
-		Monom tmp();
-		tmpC->head->m = Monom(tmpB->head->GetMonom());
-		prevC->next = tmpC->head;
-		prevC = tmpC->head;
-		tmpB->head = tmpB->head->next;
-	}
-	return *tmpC;
 }
+Polinom Polinom :: operator + (const Polinom& right) const
+{
+	Polinom res;
+	Node* current_this = this->head;
+	Node* current_right = right.head;
+	Node* current_res;
 
-Polinom& Polinom :: Plus2 ( Polinom *&B,  Polinom *&C){
-	// this = B + C
-	// this = A
-	Node *tmpA, *tmpB, *tmpC;
-	// почистить this
-	tmpA = new Node(Monom(-1, -1, -1, -1)); // временная голова, потом можно удалить
-	tmpA = this->head;
-	tmpB = this->head;
-	tmpC = this->head;
-	while((tmpB != NULL)&& (tmpC != NULL)) // пока В и С не кончились
+	if (this->head == 0)
 	{
-		//сравниваем степени tmpC->data->degree и tmpB->data->degree
-		//если они =, то
-		// double sum = tmpB->m.GetCoeff() + tmpC->m.GetCoeff();
-		//tmpC->SetNext = new Node(Monom(sum, degree));
-
+		return res = right;
 	}
-	return *this;	
+	if (right.head == 0)
+	{
+		return res = this->head;
+	}
+
+	res.InsertFirst(res.head, Monom());
+	current_res = res.head;
+
+	while ((current_this != NULL) && (current_right != NULL))
+	{
+		if (current_this->m < current_right->m)
+		{
+			res.InsertLast(current_res, current_this->m);
+			current_this = current_this->next;
+			current_res = current_res->next;
+		} 
+		else if (current_this->m > current_right->m)
+		{
+			res.InsertLast(current_res,current_right->m);
+			current_right = current_right->next;
+			current_res = current_res->next;
+		}
+		else 
+		{
+			res.InsertLast(current_res, current_this->m + current_right->m);
+			current_this = current_this->next;
+			current_right = current_right->next;
+			current_res = current_res->next;
+		}
+	}
+	while (current_this != NULL) {
+		res.InsertLast(current_res, current_this->m);
+		current_this = current_this->next;
+		current_res = current_res->next;
+	}
+	while (current_right != NULL) {
+		res.InsertLast(current_res, current_right->m);
+		current_right = current_right->next;
+		current_res = current_res->next;
+	}
+	res.DeleteFirst();
+	return res;
 }
 
-Polinom& Polinom :: Minus ( Polinom *&B,  Polinom *&C){
-	Polinom *tmpA, *tmpB, *tmpC;
-	tmpC->head = C->head->next;
-	Node*prevC = C->head;
-	tmpA->head = this->head->next;
-	tmpB->head = B->head->next;
-	double min = this->head->m.GetCoeff() - tmpB->head->m.GetCoeff();
-	while((tmpA != this)&& (tmpB != B)){
-		if (this->head->m == tmpB->head->m) //сравнение степеней 
-			if ((min >= 0.00001) || (min <=  -0.00001)){
-				tmpC = new Polinom();
-				tmpC->head->m.coeff = min;
-				prevC->next = tmpC->head;
-			}
-			if (this->head->m > tmpB->head->m){
-				tmpC = new Polinom();
-				tmpC->head->m = Monom(tmpB->head->GetMonom());
-				prevC->next = tmpC->head;
-				prevC = tmpC->head;
-				tmpB->head = tmpB->head->next;
-			}
-			else {
-				tmpC = new Polinom();
-				tmpC->head->m = Monom(this->head->GetMonom());
-				prevC->next = tmpC->head;
-				prevC = tmpC->head;
-				tmpB->head = tmpB->head->next;
-			}
+ostream &operator<<(ostream &ostr,  const Polinom& p) // вывод
+{
+	Node* tmp = p.head;
+
+	while (tmp != NULL){
+		ostr << "(" << tmp->m << ") ";
+		ostr << "  ";
+		tmp = tmp->next;
 	}
-	while(tmpA->head != this->head){
-		tmpC = new Polinom();
-		tmpC->head->m = Monom(this->head->GetMonom());
-		prevC->next = tmpC->head;
-		prevC = tmpC->head;
-		tmpB->head = tmpB->head->next;
-	}
-	while(tmpB->head != B->head){
-		tmpC = new Polinom();
-		Monom tmp();
-		tmpC->head->m = Monom(tmpB->head->GetMonom());
-		prevC->next = tmpC->head;
-		prevC = tmpC->head;
-		tmpB->head = tmpB->head->next;
-	}
-	return *tmpC;
+	ostr << endl;
+	return ostr;
 }
-Polinom& Polinom :: Subtruct (const Polinom *&B, const Polinom *&C){
-	Polinom *tmpA, *tmpB, *tmpC;
-	tmpC->head = C->head->next;
-	Node*prevC = C->head;
-	tmpA->head = this->head->next;
-	tmpB->head = B->head->next;
-	while (tmpA->head != this->head ){
-		while (tmpB->head != B->head){
-		//Упорядочивание и вставки tmpC = Insert(C, tmpC);
+Polinom Polinom :: operator-(const Polinom& right) const
+{
+	Polinom res;
+
+	if (right.head == NULL)
+	{
+		return res = *this;
+	}
+	if (this->head == NULL)
+	{
+		Monom m(-1,0,0,0);
+		res = right * m;
+		return res;
+	}
+	Monom m(-1,0,0,0);
+	res = (*this) + right * m;
+	return res;
+}
+
+Polinom Polinom :: operator*( const Monom& right) const
+{
+	Polinom res;
+	Node *current_res;
+	Node* current = this->head;
+	res.InsertFirst(res.head, Monom());
+	current_res = res.head;
+	while (current != NULL)
+	{
+		res.InsertLast(current_res, current->m * right);
+		current = current->next;
+		current_res = current_res->next;
+	}
+	res.DeleteFirst();
+	return res;
+}
+Polinom& Polinom :: operator=(const Polinom &A){
+	if (this == &A) {
+		return *this;
+	}
+	else {	
+		this->DeleteList();
+
+		Node *tmp;
+		Node *tmp_this;
+		if (!A.head)
+		{
+			this->head = NULL;
+			return *this;
 		}
 
-	}
+		this->head = new Node(A.head->m);
+		tmp = A.head->next;
+		tmp_this = this->head; 
+		while(tmp != NULL){
+			this->InsertLast(tmp_this, tmp->m);
+			tmp_this = tmp_this->next;
+			tmp = tmp->next;
+		}
+		tmp_this->next = NULL;
+	}	
 	return *this;
-
 }
-Polinom& Polinom :: Scalar (int scalar){
-
-	return *this;
+Polinom Polinom :: operator*(const Polinom& right) const
+{
+	Polinom res;
+	Polinom temp;
+	Node* current = this->head;
+	while (current != NULL) {
+		temp = right * current->m;
+		//cout << temp;
+		
+		res = temp + res;
+		//cout << temp + res;
+		current = current->next;
+	}
+	return res;
 }

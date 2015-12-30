@@ -3,9 +3,7 @@
 // Поиск монома, Сложение полиномов(слияние упорядоченных списков), 
 // Умножение полиномов
 
-#ifndef _POLINOM_H_
-#define _POLINOM_H
-
+#pragma once
 
 #include <iostream>
 #include "monom.h"
@@ -19,14 +17,13 @@ struct Node{
 
 	Node();
 	Node(Monom x, Node *next);
-	Node(Node &N);
+//	Node(Node &N);
 	Node (Monom x);
 	~Node();
 	void SetMonom(Monom x);
 	void SetNext(Node *n);
 	Node * GetNext();
 	Monom GetMonom();
-//	void PrintNode(Node *next);
 	friend ostream &operator<<(ostream &ostr, const Node *head);
 };
 
@@ -36,6 +33,7 @@ public:
 	Node* head;
 
 	Polinom();
+	Polinom(Polinom &p);
 	Polinom(Node *next);
 	~Polinom();
 
@@ -45,18 +43,16 @@ public:
 	void InsertFirst(Node *&head, Monom &data); //вставка монома в начало списка
 	void InsertMiddle(Node *curr, Monom &data); //вставка монома в середину списка
 	
-	void DeleteFirst(Node *&head);//Удаление первого
+	void DeleteFirst();//Удаление первого
+	void DeleteList(); //Удаление списка
 	void DeleteMiddle(Node *&head);//Удаление из середины
 	
-	void Search(Node *&head, Monom &key);//поиск
-	Node* SearchForDelete(Node *&head, Monom &key);
-
-	Polinom& Plus ( Polinom *&B,  Polinom *&C);
-	Polinom& Plus2 ( Polinom *&B,  Polinom *&C);
-	Polinom& Minus ( Polinom *&B,  Polinom *&C);
-	Polinom& Subtruct (const Polinom *&B, const Polinom *&C);
-	Polinom& Scalar (int scalar);
-
+	void Search(Monom &key);//поиск	
+	Polinom operator+ (const Polinom& right) const;
+	Polinom operator-(const Polinom& right) const;
+	Polinom operator*(const Monom& right) const;
+	Polinom operator*(const Polinom& right) const;
+	friend ostream &operator<<(ostream &ostr, const Polinom& p) ;
+	Polinom& operator=(const Polinom &B);
 };
 
-#endif

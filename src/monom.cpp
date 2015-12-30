@@ -25,26 +25,24 @@ Monom :: ~Monom(){
 Monom :: Monom(Monom &m){
 	this->deg = new int [3];
 
-	for (int i = 0; i < 2; i++)
-		m.deg[i] = deg[i];
+	for (int i = 0; i < 3; i++)
+		deg[i] = m.deg[i];
 	this->coeff = m.coeff;
 }
-Monom :: Monom(){
-	deg = NULL;
-	coeff = 0;
-}
-//void Monom :: PrintMonom(Monom *head){
-//	while (head != NULL){
-//		cout << "coeff = " << head->coeff << endl;
-//		cout << "deg = " << head->deg << endl;
-//	}
+//Monom :: Monom(){
+//	deg = NULL;
+//	coeff = 0;
 //}
-ostream &operator<<(ostream &ostr, const Monom *head) // вывод
+ostream &operator<<(ostream &ostr, const Monom head) // вывод
 {
-	while (head != NULL){
-		ostr << "coeff = " << head->coeff << endl;
-		ostr << "deg = " << head->deg << endl;
-			}
+	//while (head != NULL){
+		ostr << "coeff = " << head.coeff << ", ";
+		ostr << "deg = ";
+		if (!head.deg) ostr << "NULL deg";
+		for(int i = 0; i < 3; i++ )
+		ostr  << head.deg[i];
+		ostr << " ";
+	//		}
 	return ostr;
 }
 double Monom :: GetCoeff() const
@@ -74,7 +72,12 @@ double Monom :: GetCoeff() const
  		return *this;
  	}
  	coeff = A.GetCoeff();
- 	deg = A.GetDegree();
+ 	
+	if (!deg)
+		deg = new int[3];
+	for (int i = 0; i < 3; i++)
+		this->deg[i] = A.deg[i];
+	
  	return *this;
  }
  
@@ -92,51 +95,48 @@ double Monom :: GetCoeff() const
  	return !(A == B);
  }
  
- bool operator < (const Monom& A, const Monom& B)
- {
-	for(int i = 0; i < 3; i++)
-	 if (A.deg[i] > B.deg[i])
-			return false;
- 	return true;
- }
+bool operator < (const Monom& A, const Monom& B)
+{
+	 int powerA = A.deg[0]*100 + A.deg[1]*10 + A.deg[2];
+	 int powerB = B.deg[0]*100 + B.deg[1]*10 + B.deg[2];
+	 if (powerA < powerB)
+ 		return true;
+	 return false;
+}
  
  bool operator > (const Monom& A,const Monom& B)
  {
-	 for(int i = 0; i < 3; i++)
-		 if (A.deg[i] < B.deg[i])
-			 return false;
- 	return true;
+	 int powerA = A.deg[0]*100 + A.deg[1]*10 + A.deg[2];
+	 int powerB = B.deg[0]*100 + B.deg[1]*10 + B.deg[2];
+	 if (powerA > powerB)
+ 		return true;
+	 return false;
  }
-Monom operator + (const Monom& A, const Monom& B)
+Monom Monom :: operator + (const Monom &B)
  {
-	if (A != B)
- 	{
+	int powerA = this->deg[0]*100 + this->deg[1]*10 + this->deg[2];
+	int powerB = B.deg[0]*100 + B.deg[1]*10 + B.deg[2];
+	if (powerA != powerB){
  		throw "Different degrees";
  	}
- 	Monom res(A.GetCoeff() + B.GetCoeff(), A.GetDegree());
+ 	Monom res(this->GetCoeff() + B.GetCoeff(), this->GetDegree());
  	return res;
  }
  
-Monom operator - (const Monom& A, const Monom& B) {
-	if (A != B) {
+Monom Monom :: operator - (const Monom& B) {
+	int powerA = this->deg[0]*100 + this->deg[1]*10 + this->deg[2];
+	int powerB = B.deg[0]*100 + B.deg[1]*10 + B.deg[2];
+	if (powerA != powerB){
  		throw "Different degrees";
  	}
- 	Monom res(A.GetCoeff() - B.GetCoeff(), A.GetDegree());
+ 	Monom res(this->GetCoeff() - B.GetCoeff(), this->GetDegree());
  	return res;
 }
 
-Monom operator*(const Monom& A, const Monom& B){
-	
-	double m = A.GetCoeff() * B.GetCoeff();
-	bool flag = true;
-	for (int i = 0; i < 3; i++)
-			if (A.deg[i] != B.deg[i]){
-				flag = false;
-				break;
-			}
-	if (flag == false) {
-		throw("Different degrees.");
-	}
-	Monom res(m, A.GetDegree());
+Monom Monom :: operator*(const Monom& B){
+	double m = this->GetCoeff() * B.GetCoeff();
+	Monom res(m, 0, 0, 0);
+	for (int i = 0; i <3; i++ )
+		res.deg[i] = this->deg[i] + B.deg[i];
 	return res;
 }
