@@ -40,7 +40,7 @@ public:
 	void PrintPolinom(Polinom *head);//Печать полинома
 	
 	void InsertLast(Node *curr, Monom &data);//вставка монома в конец списка
-	void InsertFirst(Node *&head, Monom &data); //вставка монома в начало списка
+	void InsertFirst(Monom &data); //вставка монома в начало списка
 	void InsertMiddle(Node *curr, Monom &data); //вставка монома в середину списка
 	
 	void DeleteFirst();//Удаление первого

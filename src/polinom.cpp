@@ -77,7 +77,7 @@ void Polinom :: InsertMiddle(Node *curr, Monom &data){
 	Node *elem = new Node(data, curr->next);
 	curr->next =  elem;
 }
-void Polinom :: InsertFirst(Node *&head, Monom &data){
+void Polinom :: InsertFirst(Monom &data){
 	Node *elem = new Node(data, head);
 	head = elem;
 }
@@ -126,10 +126,10 @@ Polinom Polinom :: operator + (const Polinom& right) const
 	}
 	if (right.head == 0)
 	{
-		return res = this->head;
+		return res = *this;
 	}
 
-	res.InsertFirst(res.head, Monom());
+	res.InsertFirst(Monom());
 	current_res = res.head;
 
 	while ((current_this != NULL) && (current_right != NULL))
@@ -204,7 +204,7 @@ Polinom Polinom :: operator*( const Monom& right) const
 	Polinom res;
 	Node *current_res;
 	Node* current = this->head;
-	res.InsertFirst(res.head, Monom());
+	res.InsertFirst(Monom());
 	current_res = res.head;
 	while (current != NULL)
 	{
@@ -247,12 +247,20 @@ Polinom Polinom :: operator*(const Polinom& right) const
 	Polinom res;
 	Polinom temp;
 	Node* current = this->head;
+
 	while (current != NULL) {
+		cout<<current->m;
+
 		temp = right * current->m;
-		//cout << temp;
+		
+		cout << "temp " << temp << "\n";
+		cout << "res before plus " << res << "\n";
 		
 		res = temp + res;
+
+		cout << "res after plus " << res << "\n";
 		//cout << temp + res;
+
 		current = current->next;
 	}
 	return res;

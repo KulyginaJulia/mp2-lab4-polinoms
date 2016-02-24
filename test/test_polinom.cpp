@@ -80,7 +80,7 @@ TEST(Node, Can_create_node_with_monom){
 TEST(Node, Can_copy_node){
 	Monom m1(3, 1, 1, 1);
 	Node n1(m1);
-	std::cout << n1.GetMonom();
+//	std::cout << n1.GetMonom();
 	ASSERT_NO_THROW(new Node(n1));
 	//проверка значений
 }
@@ -94,8 +94,8 @@ TEST(Polinom, Can_create_polinom_with_parametres){
 }
 TEST(Polinom, Can_copy_polinom){
 	Polinom p;
-	p.InsertFirst(p.head, Monom(2, 2, 0, 0));
-	p.InsertFirst(p.head, Monom(1, 1, 0, 0));
+	p.InsertFirst(Monom(2, 2, 0, 0));
+	p.InsertFirst(Monom(1, 1, 0, 0));
 	Polinom p1(p);
 	EXPECT_EQ(p1.head->m, p.head->m);
 	EXPECT_EQ(p1.head->next->m, p.head->next->m);
@@ -104,10 +104,10 @@ TEST(Polinom, Can_copy_polinom){
 }
 TEST(Polinom, Can_equal_polinom){
 	Polinom p;
-	p.InsertFirst(p.head, Monom(2, 3, 2, 1));
-	p.InsertFirst(p.head, Monom(1, 1, 0, 0));
+	p.InsertFirst(Monom(2, 3, 2, 1));
+	p.InsertFirst(Monom(1, 1, 0, 0));
 	Polinom p1;
-	p1.InsertFirst(p1.head, Monom(1, 0, 0, 0));
+	p1.InsertFirst(Monom(1, 0, 0, 0));
 	p1 = p;
 
 	EXPECT_EQ(p1.head->m, p.head->m);
@@ -133,7 +133,7 @@ TEST(Polinom, Can_insert_monom_first){
 	Monom m1(3, 1, 1, 1);
 	Node n1(m1);
 	Polinom p;
-	p.InsertFirst(p.head, m1);
+	p.InsertFirst(m1);
 
 	EXPECT_EQ(m1, p.head->m);
 }
@@ -141,7 +141,7 @@ TEST(Polinom, Can_insert_monom_last){
 	Monom m1(3, 1, 1, 1);
 	Monom m2(5.4, 2, 1, 1);
 	Polinom p;
-	p.InsertFirst(p.head, m1);
+	p.InsertFirst(m1);
 	Node *curr = p.head;
 	
 	p.InsertLast(curr, m2);
@@ -152,8 +152,8 @@ TEST(Polinom, Can_insert_monom_middle){
 	Monom m2(5.4, 2, 1, 1);
 	Monom m3(5.8, 2, 1, 1);
 	Polinom p;
-	p.InsertFirst(p.head, m3);
-	p.InsertFirst(p.head, m1);
+	p.InsertFirst(m3);
+	p.InsertFirst(m1);
 
 	p.InsertMiddle(p.head, m2);
 	EXPECT_EQ(m2.coeff, p.head->next->m.coeff);
@@ -161,11 +161,11 @@ TEST(Polinom, Can_insert_monom_middle){
 
 TEST(Polinom, can_plus) {
 	Polinom a;
-	a.InsertFirst(a.head, Monom(2, 2, 0, 0));
-	a.InsertFirst(a.head, Monom(2, 1, 0, 0));
+	a.InsertFirst(Monom(2, 2, 0, 0));
+	a.InsertFirst(Monom(2, 1, 0, 0));
 	Polinom b;
-	b.InsertFirst(b.head, Monom(1, 2, 0, 0));
-	b.InsertFirst(b.head, Monom(4, 1, 0, 0));
+	b.InsertFirst(Monom(1, 2, 0, 0));
+	b.InsertFirst(Monom(4, 1, 0, 0));
 	Polinom c;
 	
 	c = a + b;
@@ -176,11 +176,11 @@ TEST(Polinom, can_plus) {
 
 TEST(Polinom, can_minus) {
 	Polinom a;
-	a.InsertFirst(a.head, Monom(2, 2, 0, 0));
-	a.InsertFirst(a.head, Monom(2, 1, 0, 0));
+	a.InsertFirst(Monom(2, 2, 0, 0));
+	a.InsertFirst(Monom(2, 1, 0, 0));
 	Polinom b;
-	b.InsertFirst(b.head, Monom(4, 2, 0, 0));
-	b.InsertFirst(b.head, Monom(1, 1, 0, 0));
+	b.InsertFirst(Monom(4, 2, 0, 0));
+	b.InsertFirst(Monom(1, 1, 0, 0));
 	Polinom c;
 
 	c = a - b;
@@ -191,8 +191,8 @@ TEST(Polinom, can_minus) {
 
 TEST(Polinom, can_multiply_polinom_monom){
 	Polinom a;
-	a.InsertFirst(a.head, Monom(1.5, 1, 0, 0));
-	a.InsertFirst(a.head, Monom(2.5, 2, 0, 0));
+	a.InsertFirst(Monom(1.5, 1, 0, 0));
+	a.InsertFirst(Monom(2.5, 2, 0, 0));
 	Monom b(2.0, 1, 0, 0);
 	Polinom c;
 
@@ -201,13 +201,13 @@ TEST(Polinom, can_multiply_polinom_monom){
 	EXPECT_EQ(5, c.head->m.coeff);
 	EXPECT_EQ(3, c.head->next->m.coeff);
 }
-TEST(Polinom, can_multiply_polinom_whith_polinom){
+TEST(Polinom, can_multiply_polinom_with_polinom){
 	Polinom a;
-	a.InsertFirst(a.head, Monom(2, 3, 0, 0));
-	a.InsertFirst(a.head, Monom(1, 1, 0, 0));
+	a.InsertFirst(Monom(2, 3, 0, 0));
+	a.InsertFirst(Monom(1, 1, 0, 0));
+	Polinom b(a);
+	Polinom c(a*b);
 
-	Polinom c(a*a);
-	//c = a * a; 
 
 	EXPECT_EQ(1, c.head->m.coeff);
 	EXPECT_EQ(4, c.head->next->m.coeff);
@@ -216,5 +216,4 @@ TEST(Polinom, can_multiply_polinom_whith_polinom){
 	EXPECT_EQ(2, c.head->m.deg[0]);
 	EXPECT_EQ(4, c.head->next->m.deg[0]);
 	EXPECT_EQ(6, c.head->next->next->m.deg[0]);
-
 }
