@@ -30,4 +30,6 @@ public:
 	Monom operator + (const Monom &B);
  	Monom operator - (const Monom &B);
 	Monom operator * (const Monom &B);
+
+	Monom CreateMonom();
 };

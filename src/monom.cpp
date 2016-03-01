@@ -136,7 +136,19 @@ Monom Monom :: operator - (const Monom& B) {
 Monom Monom :: operator*(const Monom& B){
 	double m = this->GetCoeff() * B.GetCoeff();
 	Monom res(m, 0, 0, 0);
-	for (int i = 0; i <3; i++ )
+	for (int i = 0; i <3; i++ ){
 		res.deg[i] = this->deg[i] + B.deg[i];
+		if (res.deg[i] > 9)
+			throw "degree is over 9";
+	}
 	return res;
+}
+Monom Monom :: CreateMonom(){	
+		cin >> this->coeff;
+		for (int i = 0; i < 3; i++){
+			cin >> this->deg[i];
+			if ((deg[i] > 9) || (deg[i] < 0))
+				throw "degrees is uncorrect";
+		}
+		return *this;
 }

@@ -54,5 +54,8 @@ public:
 	Polinom operator*(const Polinom& right) const;
 	friend ostream &operator<<(ostream &ostr, const Polinom& p) ;
 	Polinom& operator=(const Polinom &B);
+	Polinom Entering();
+	Polinom DoOperation(Polinom B, char op);
+	void Clear();
 };
-
+	void CheckOperation(char op);

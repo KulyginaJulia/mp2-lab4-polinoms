@@ -148,10 +148,12 @@ Polinom Polinom :: operator + (const Polinom& right) const
 		}
 		else 
 		{
-			res.InsertLast(current_res, current_this->m + current_right->m);
-			current_this = current_this->next;
-			current_right = current_right->next;
-			current_res = current_res->next;
+			if (current_this->m + current_right->m != 0){
+				res.InsertLast(current_res, current_this->m + current_right->m);
+				current_this = current_this->next;
+				current_right = current_right->next;
+				current_res = current_res->next;
+			}
 		}
 	}
 	while (current_this != NULL) {
@@ -259,9 +261,48 @@ Polinom Polinom :: operator*(const Polinom& right) const
 		res = temp + res;
 
 		cout << "res after plus " << res << "\n";
-		//cout << temp + res;
 
 		current = current->next;
 	}
+
 	return res;
+}
+Polinom Polinom ::  Entering(){
+	bool flag1 = true;
+	int i = 0;
+	cout << "Enter polinom" << endl;
+	while (flag1 == true){
+		Monom a;
+		cout << "Enter monom" << endl;
+		a.CreateMonom();
+		this->InsertFirst(a);
+		cout << "Polinom was over? Enter Yes(1) or No(2)" << endl;
+		int m;
+		cin >> m;
+		if (m != 2)
+			flag1 = false;
+	}
+	return *this;
+}
+
+Polinom	Polinom :: DoOperation(Polinom B, char op){
+	Polinom C;
+	if (op == '+')
+		C = *this + B;
+	if (op == '-')
+		C = *this - B;
+	if (op == '*')
+		C = *this * B;
+	return C;
+}
+void Polinom:: Clear(){
+	if ((head->m.coeff != 0) && (head->next != NULL))
+		while (head != NULL){
+			if (head->m.coeff == 0)
+				DeleteFirst();
+	}
+}
+void CheckOperation(char op){
+		if ((op != '+') && (op != '-') && (op != '*'))
+			throw "Operation is uncorrect";
 }
